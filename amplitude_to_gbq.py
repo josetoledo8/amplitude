@@ -1,22 +1,26 @@
 def credentials():
     # SET BIGQUERY ENVIRONMENT
-    #os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = json_key_path
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/content/drive/MyDrive/Portfólio/my_bq_json_key.json"
     client = bigquery.Client()
 
     return client
     
 
-def call_amplitude_api(start_date, end_date, API_KEY, SECRET_KEY, COLUMNS_OF_INTEREST, bq_infos, client):
+def call_amplitude_api(start_date, end_date, API_KEY, SECRET_KEY, bq_infos, client):
   
   api_main_path = f'https://amplitude.com/api/2/export?start={start_date}&end={end_date}'
 
   request_result = requests.get(api_main_path, auth = HTTPBasicAuth(API_KEY, SECRET_KEY))
 
-  return generate_events_dict(content = request_result.content, columns_of_interest = COLUMNS_OF_INTEREST, bq_infos = bq_infos, client = client)
+  return generate_events_dict(content = request_result.content, bq_infos = bq_infos, client = client)
 
 
-def generate_events_dict(content, columns_of_interest, bq_infos, client):
+def generate_events_dict(content, bq_infos, client):
   events_dict = {}
+
+  columns_of_interest = ['amplitude_id', 'app', 'client_event_time', 'device_family', 
+                        'device_model', 'device_type', 'event_id', 'event_properties', 
+                        'event_time', 'event_type', 'session_id', 'user_id', 'user_properties']
   
   for column in columns_of_interest:
     events_dict[column] = []
@@ -143,7 +147,7 @@ def update_GBQ_table(project_id:str, dataset:str, table:str, client):
     query_job.result()
 
     
-def set_conditions_and_start(COLUMNS_OF_INTEREST, API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION):
+def set_conditions_and_start(API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION):
   client = credentials()
 
   bq_infos = {'project_id'    : BIGQUERY_PROJECT_NAME,
@@ -165,7 +169,7 @@ def set_conditions_and_start(COLUMNS_OF_INTEREST, API_KEY, SECRET_KEY, BIGQUERY_
   start_date = string_date + "T0"
   end_date = string_date + "T23"
 
-  amplitude_df = call_amplitude_api(start_date, end_date, API_KEY, SECRET_KEY, COLUMNS_OF_INTEREST, bq_infos, client)
+  amplitude_df = call_amplitude_api(start_date, end_date, API_KEY, SECRET_KEY, bq_infos, client)
 
   save_gbq(df = amplitude_df, 
           project_id = bq_infos['project_id'],
@@ -199,8 +203,4 @@ BIGQUERY_TABLE_DESTINATION = 'events'
 API_KEY = "AMPLITUDE_API_KEY_STRING"
 SECRET_KEY = "AMPLITUDE_SECRET_KEY_STRING"
 
-COLUMNS_OF_INTEREST = ['amplitude_id', 'app', 'client_event_time', 'device_family', 
-                        'device_model', 'device_type', 'event_id', 'event_properties', 
-                        'event_time', 'event_type', 'session_id', 'user_id', 'user_properties']
-
-set_conditions_and_start(COLUMNS_OF_INTEREST, API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION)
+set_conditions_and_start(API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION)
