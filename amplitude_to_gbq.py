@@ -147,7 +147,7 @@ def update_GBQ_table(project_id:str, dataset:str, table:str, client):
     query_job.result()
 
     
-def set_conditions_and_start(API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION):
+def set_conditions_and_start(API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION, CUSTOM_DATE):
   client = credentials()
 
   bq_infos = {'project_id'    : BIGQUERY_PROJECT_NAME,
@@ -156,7 +156,6 @@ def set_conditions_and_start(API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUER
               'if_exists'     : 'replace'
   } 
 
-  CUSTOM_DATE = None #expected None or 'YYYY-MM-DD'
   if CUSTOM_DATE != None:
     CUSTOM_DATE = datetime.strptime(CUSTOM_DATE, '%Y-%m-%d').date()
 
@@ -203,4 +202,6 @@ BIGQUERY_TABLE_DESTINATION = 'events'
 API_KEY = "AMPLITUDE_API_KEY_STRING"
 SECRET_KEY = "AMPLITUDE_SECRET_KEY_STRING"
 
-set_conditions_and_start(API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION)
+CUSTOM_DATE = None #expected None or 'YYYY-MM-DD'
+
+set_conditions_and_start(API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION, CUSTOM_DATE)
