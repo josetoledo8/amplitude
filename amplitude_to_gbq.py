@@ -173,4 +173,4 @@ COLUMNS_OF_INTEREST = ['amplitude_id', 'app', 'client_event_time', 'device_famil
                         'device_model', 'device_type', 'event_id', 'event_properties', 
                         'event_time', 'event_type', 'session_id', 'user_id', 'user_properties']
 
-set_conditions_and_start(BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION)
+set_conditions_and_start(COLUMNS_OF_INTEREST, API_KEY, SECRET_KEY, BIGQUERY_PROJECT_NAME, BIGQUERY_DATASET_DESTINATION, BIGQUERY_TABLE_DESTINATION)
