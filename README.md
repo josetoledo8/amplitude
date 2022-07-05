@@ -3,7 +3,7 @@
 This is a EL script which copy Amplitude's events into Google BigQuery. However, some manual steps _must be_ executed before run this script.
 
 - **[MANUAL STEP]**: Create a dataset in the BigQuery and name it as `amplitude`
-- **[MANUAL STEP]**: Get the API_KEY and SECRET_KEY parameters of your Amplitude's project and pass them to the variables `API_KEY` and `SECRET_KEY` (lines 203, 204). They can be find in Settings > Projects > YOUR_PROJECT in the Amplitude GUI.
+- **[MANUAL STEP]**: Get the API_KEY and SECRET_KEY parameters of your Amplitude's project and pass them to the variables `API_KEY` and `SECRET_KEY` (lines 203, 204). They can be found in Settings > Projects > YOUR_PROJECT in the Amplitude GUI.
 - **[MANUAL STEP]**: Pass the name of your GCP project to the variable `BIGQUERY_PROJECT_NAME` (line 199)
 - **[MANUAL STEP]**: If you will run this script locally and your PC does not have the GCP auth in the enviroment variables, then in line 3 replace `PATH_TO_YOUR_JSON_KEY` with the correct path to the JSON Key associated to the [service account](https://cloud.google.com/iam/docs/service-accounts?hl=pt-br) which will manage the copy to the BigQuery. Otherwise, simply comment the line 3.
 
