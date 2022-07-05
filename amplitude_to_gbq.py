@@ -1,6 +1,6 @@
 def credentials():
     # SET BIGQUERY ENVIRONMENT
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/content/drive/MyDrive/Portfólio/my_bq_json_key.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "PATH_TO_YOUR_JSON_KEY"
     client = bigquery.Client()
 
     return client
