@@ -44,13 +44,43 @@ def generate_events_df(events_dict, bq_infos, client):
   for date_columns in ['client_event_time', 'event_time']:
     df[date_columns] = pd.to_datetime(df[date_columns])
 
-  df = get_gbq_schema(df = df,
-                      project_name = bq_infos['project_id'],
-                      dataset = bq_infos['dataset_name'],
-                      table_name = bq_infos['table_name'], 
-                      columns = df.columns.to_list(), 
-                      client = client
-                    )
+  try:
+    df = get_gbq_schema(df = df,
+                        project_name = bq_infos['project_id'],
+                        dataset = bq_infos['dataset_name'],
+                        table_name = bq_infos['table_name'], 
+                        columns = df.columns.to_list(), 
+                        client = client
+                      )
+  except:
+    create_table_query = f'''
+      CREATE TABLE `{bq_infos['project_id']}.{bq_infos['dataset_name']}.{bq_infos['table_name']}`
+      (
+        amplitude_id INT64,
+        app INT64,
+        client_event_time TIMESTAMP,
+        device_family STRING,
+        device_model STRING,
+        device_type STRING,
+        event_id INT64,
+        event_properties STRING,
+        event_time TIMESTAMP,
+        event_type STRING,
+        session_id INT64,
+        user_id STRING,
+        user_properties STRING
+      );
+      '''
+    query_job = client.query(create_table_query)
+    query_job.result()
+
+    df = get_gbq_schema(df = df,
+                        project_name = bq_infos['project_id'],
+                        dataset = bq_infos['dataset_name'],
+                        table_name = bq_infos['table_name'], 
+                        columns = df.columns.to_list(), 
+                        client = client
+                      )
   return df
 
 
